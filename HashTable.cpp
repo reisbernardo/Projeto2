@@ -9,6 +9,7 @@ TIA: 32025165
 
 #include <iostream>
 #include <string>
+#include <cstring>
 #include <fstream>
 #include <time.h>
 #define PRIME 86969 // Prime number to Hash Function
@@ -26,7 +27,7 @@ class HashNode {
 
         /* Constructor function that copies each char array from 
         parameter using strncpy() into each class attribute */
-        HashNode(char *name, char *country, char *discipline, int deleted){
+        HashNode(const char *name, const char *country, const char *discipline, int deleted){
             strncpy(this->name, name, MAX);
             strncpy(this->country, country, MAX);
             strncpy(this->discipline, discipline, MAX);
@@ -59,8 +60,8 @@ class HashTable {
         and do the power of the current character from string its ASCII code value, 
         then do hash_value mod (%) PRIME (prime number),
         and returns that value mod (%) TABLE size. */ 
-        unsigned int hashFunc(char *name){
-            int n = strnlen_s(name, MAX);
+        unsigned int hashFunc(const char *name){
+            int n = strlen(name);
             unsigned int hash_value = TABLE / 2;
             for (int i = 0; i < n; i++)
                 hash_value = (hash_value * 33) ^ name[i];
@@ -69,7 +70,7 @@ class HashTable {
         }
 
         // Insert function that uses Linear Probing for collisions
-        bool insertNode(char *name, char *country, char *discipline){
+        bool insertNode(const char *name, const char *country, const char *discipline){
             if (max == current_size) return false;
             HashNode* temp = new HashNode(name, country, discipline, 1);
             int index = hashFunc(name);
@@ -87,7 +88,7 @@ class HashTable {
 
         /* Search function that gets Node using its Hash Function, 
         and continues iteration if it was deleted to check if it was later added again, because of collision */
-        HashNode* searchNode(char *name){
+        HashNode* searchNode(const char *name){
             int index = hashFunc(name);
             for(int i=0; i < max; i++){
                 int next = (i + index) % max;
@@ -99,7 +100,7 @@ class HashTable {
         }
 
         // Delete function that deletes value and assigns its deleted attribute to -1
-        HashNode* deleteNode(char *name){
+        HashNode* deleteNode(const char *name){
             int index = hashFunc(name);
             for(int i=0; i < max; i++){
                 int next = (i + index) % max;
@@ -127,7 +128,7 @@ class HashTable {
         }
 
         // Function that reads an csv file and inserts it to the Hash Table
-        void insertDataset(char* filename){
+        void insertDataset(const char* filename){
             fstream myfile;
             myfile.open(filename);
             char c1[MAX], c2[MAX], c3[MAX];
